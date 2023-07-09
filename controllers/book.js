@@ -18,7 +18,12 @@ exports.getBestRating = (req,res, next) => {
 }
 
 exports.createBook = (req, res, next) => {
+    delete req.body._id;
+    delete req.body._userId;
+    
+    const book = new Book({
 
+    })
 }
 
 exports.modifyBook = (req, res, next) => {
