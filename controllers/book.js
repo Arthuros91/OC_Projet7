@@ -16,3 +16,19 @@ exports.getOneBook = (req, res, next) => {
 exports.getBestRating = (req,res, next) => {
     
 }
+
+exports.createBook = (req, res, next) => {
+
+}
+
+exports.modifyBook = (req, res, next) => {
+
+}
+
+exports.rateBook = (req, res, next) => {
+
+}
+
+exports.deleteBook = (req, res, next) => {
+
+}
