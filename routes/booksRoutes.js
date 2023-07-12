@@ -16,7 +16,7 @@ router.get("/bestrating", bookCtrl.getBestRating);
 router.post("/", auth, multer, bookCtrl.createBook);
 router.post("/:id/rating", auth, bookCtrl.rateBook);
 
-router.put("/:id", auth, bookCtrl.modifyBook);
+router.put("/:id", auth, multer, bookCtrl.modifyBook);
 
 router.delete("/:id", auth, bookCtrl.deleteBook);
 
