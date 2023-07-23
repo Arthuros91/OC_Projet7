@@ -4,25 +4,21 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require('dotenv').config()
 
-exports.signUp = (req, res, next) => {
+exports.signUp = (req, res, next) => {   
     bcrypt.hash(req.body.password, 10)
-        .then(hash => {
-            const user = new User({
-                email: req.body.email,
-                password:hash
-            });
-            user.save()
-                .then(() => res.status(200).json({message: "Utilisateur créé avec succès !"}))
-                .catch(error => res.status(400).json({ error }));
-        })
-        .catch(error => res.status(500).json({ error }))
-    }
+    .then(hash => {
+        const user = new User({
+            email: req.body.email,
+            password:hash
+        });
+        user.save()
+            .then(() => res.status(200).json({message: "Utilisateur créé avec succès !"}))
+            .catch(error => res.status(400).json({ error }));
+    })
+    .catch(error => res.status(500).json({ error }))
+}
+
     
-
-
-
-
-
 exports.login = (req, res, next) => {
     User.findOne({email: req.body.email})
         .then(user => {
@@ -46,4 +42,34 @@ exports.login = (req, res, next) => {
                 .catch(error => res.status(501).json({ error }));
         })
         .catch(error => res.status(500).json({ error }));
+}
+
+
+
+
+
+
+
+function checkEmail(chaine) {
+    let arobaseRegex = /@/;
+    let contientArobase = arobaseRegex.test(chaine);
+    if (contientArobase) {
+      return true;
+    } else {
+      return false;
+    }
+}
+
+function checkPaswword(chaine) {
+    let majusculeRegex = /[A-Z]/;
+    let chiffreRegex = /\d/;
+
+    let contientMajuscule = majusculeRegex.test(chaine);
+    let contientChiffre = chiffreRegex.test(chaine);
+
+if (contientMajuscule && contientChiffre) {
+    return true;
+    } else {
+    return false;
+    }
 }
