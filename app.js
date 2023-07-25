@@ -12,7 +12,7 @@ const app = express();
 
 
 mongoose.connect(
-        "mongodb+srv://arthura54:" + process.env.PASSWORD_MONGODB + "@database.iyfmdur.mongodb.net/?retryWrites=true&w=majority",
+        "mongodb+srv://" + process.env.MONGODB_URL + "?retryWrites=true&w=majority",
         { useNewUrlParser: true, useUnifiedTopology: true }
     )
     .then(() => console.log("Connexion à MongoDB réussie !"))
