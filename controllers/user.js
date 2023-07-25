@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 require('dotenv').config()
 
 exports.signUp = (req, res, next) => {   
-    bcrypt.hash(req.body.password, 10)
+    bcrypt.hash( req.body.password, 10 )
     .then(hash => {
         const user = new User({
             email: req.body.email,
@@ -20,7 +20,7 @@ exports.signUp = (req, res, next) => {
 
     
 exports.login = (req, res, next) => {
-    User.findOne({email: req.body.email})
+    User.findOne({ email: req.body.email })
         .then(user => {
             if(!user) {
                 return res.status(401).json({message: "Le nom d'utilisateur ou le mot de passe est incorrect"})
@@ -44,32 +44,3 @@ exports.login = (req, res, next) => {
         .catch(error => res.status(500).json({ error }));
 }
 
-
-
-
-
-
-
-function checkEmail(chaine) {
-    let arobaseRegex = /@/;
-    let contientArobase = arobaseRegex.test(chaine);
-    if (contientArobase) {
-      return true;
-    } else {
-      return false;
-    }
-}
-
-function checkPaswword(chaine) {
-    let majusculeRegex = /[A-Z]/;
-    let chiffreRegex = /\d/;
-
-    let contientMajuscule = majusculeRegex.test(chaine);
-    let contientChiffre = chiffreRegex.test(chaine);
-
-if (contientMajuscule && contientChiffre) {
-    return true;
-    } else {
-    return false;
-    }
-}

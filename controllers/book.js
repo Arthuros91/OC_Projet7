@@ -35,7 +35,7 @@ exports.createBook = (req, res, next) => {
         userId: req.auth.userId,
         title: bookObject.title,
         author: bookObject.author,
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+        imageUrl: `${req.protocol}://${req.get('host')}/${req.file.path}`,
         year: bookObject.year,
         genre: bookObject.genre,
         ratings: [{
@@ -55,10 +55,13 @@ exports.createBook = (req, res, next) => {
 }
 
 exports.modifyBook = (req, res, next) => {
-    const bookObject = req.file ? {
-        ...JSON.parse(req.body.book),
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    } : {...req.body};
+    if (req.file) {
+        const imageUrl = `${req.protocol}://${req.get('host')}/${req.file.path}`;
+        bookObject = {
+            ...JSON.parse(req.body.book),
+            imageUrl: imageUrl
+        };
+    }
 
     delete bookObject._userId;
     Book.findOne({_id: req.params.id})
@@ -74,11 +77,6 @@ exports.modifyBook = (req, res, next) => {
         .catch(error => res.status(400).json({ error }));
     
 }
-
-
-
-
-
 
 exports.rateBook = (req, res, next) => {
     const rating = {
@@ -110,14 +108,6 @@ exports.rateBook = (req, res, next) => {
         .catch(error => res.status(404).json({ error }));
 
 }
-
-
-
-
-
-
-
-
 
 exports.deleteBook = (req, res, next) => {
     Book.findOne({_id: req.params.id})

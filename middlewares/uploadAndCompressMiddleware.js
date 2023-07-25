@@ -7,16 +7,23 @@ const MIME_TYPES = {
     "image/png": "png",
 };
 
-const storage = multer.memoryStorage(); // Utilisez memoryStorage pour stocker temporairement l'image en mémoire
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 const uploadAndCompressMiddleware = (req, res, next) => {
-    upload.single("image")(req, res, async (err) => { 
+    upload.single("image")(req, res, async (err) => {
         try {
-            const format = MIME_TYPES[req.file.mimetype];
-            if (!format) {
-                return res.status(401).json({message: "Type non pris en charge"});
+            if (err) {
+                console.error("Erreur lors de la compression et de l'enregistrement de l'image : ", err); 
+                return res.status(500).json({ message: "Erreur lors du téléchargement de l'image.", err });
             }
+
+            const format = MIME_TYPES[req.file.mimetype];
+            console.log("Mimetype du fichier téléchargé : ", format);
+            if (!format) {
+                return res.status(401).json({ message: "Type non pris en charge" });
+            }
+
             const compressedImage = await sharp(req.file.buffer)
                 .toFormat(format, { quality: 60 })
                 .toBuffer();
@@ -24,12 +31,14 @@ const uploadAndCompressMiddleware = (req, res, next) => {
             const fileName = req.file.originalname.split(" ").join("_").split(".")[0];
             const compressedFileName = `${fileName}-${Date.now()}.${format}`;
             const imagePath = `images/${compressedFileName}`;
-            await sharp(compressedImage).toFile(imagePath);
 
+            await sharp(compressedImage).toFile(imagePath);
+            req.file.path = imagePath;
             next();
+
         } catch (err) {
-            return next(err);
-    }
+            return res.status(500).json({ message: "Erreur lors de la compression et de l'enregistrement de l'image.",err });
+        }
     });
 };
 
